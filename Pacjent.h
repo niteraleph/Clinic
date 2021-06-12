@@ -5,7 +5,13 @@ using std::string;
 
 class Pacjent
 {
-	int id;
-	string firstname, lastname, pesel, email;
+	int pesel;
+	string imie, nazwisko;
+public:
+	int getPesel();
+	string getImie();
+	string getNazwisko();
+	Pacjent(string imie_pacjenta, string nazwisko_pacjenta, int pesel_pacjenta);
+	Pacjent();
 };
 
