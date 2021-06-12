@@ -1,7 +1,7 @@
 #include <string>
 
 using namespace std;
-Class doktor : public specjalizacja {
+Class Doktor {
 int id;
 string imie;
 string nazwisko;
