@@ -1,7 +1,7 @@
 #include <string>
 
 using namespace std;
-Class Doktor {
+class Doktor {
 int id;
 string imie;
 string nazwisko;
