@@ -5,6 +5,6 @@ Class doktor : public specjalizacja {
 int id;
 string imie;
 string nazwisko;
-specjalizacja specjalizacja;
+string specjalizacja;
 
 };
