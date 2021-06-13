@@ -18,3 +18,11 @@ void Terminarz::dodajWizyte(int dzienWizyty, int godzinaWizyty,int peselPacjenta
 {
 	dostepnosc[dzienWizyty][godzinaWizyty] = peselPacjenta;
 }
+
+int Terminarz::usunWizyte(int dzienWizyty, int godzinaWizyty)
+{
+	int pesel_pacjenta = dostepnosc[dzienWizyty][godzinaWizyty];
+	dostepnosc[dzienWizyty][godzinaWizyty] = 0;
+	return pesel_pacjenta;
+}
+

@@ -1,16 +1,45 @@
 ﻿// Serwis przychodnia.cpp : This file contains the 'main' function. Program execution begins and ends there.
 //
-
 #include <iostream>
+#include <fstream>
 #include <vector>
 #include <string>
-using namespace std;
+#include <sstream>
 #include "Pacjent.h"
 #include "Doktor.h"
 #include "Wizyta.h"
 
+using namespace std;
+
 vector<Pacjent> pacjenci;
 vector<Doktor> doktorzy;
+string uzytkownik;
+const string haslo_dyrektora = "iqos";
+
+
+void wczytajDoktora()
+{
+    string wczytywana_dostepnosc[31][8];
+    ifstream plikDoktora;
+    plikDoktora.open("plikDoktora.txt");
+    string linieTekstu [35]; //4 linie zawierajace imie, nazwisko, pesel, specjalizacje oraz 31 linii reprezentujących wizyty
+    int i = 0;
+    while (getline(plikDoktora, linieTekstu[i])) {
+        i++;
+    }
+    Doktor wczytywany_doktor(linieTekstu[0], linieTekstu[1], stoi(linieTekstu[2]), linieTekstu[3]);
+    i = 4;
+    int it = 0;
+    for (i; i < 35; i++)
+    {
+        istringstream liniaTekstu(linieTekstu[i]);
+        while (getline(liniaTekstu, wczytywana_dostepnosc[i+4][it])) {
+            it++;
+        }
+    }
+    cout << "abc";
+}
+
 
 
 void rejestracja()
@@ -40,6 +69,7 @@ void rejestracja()
     }
 }
 
+
 void rejestracja_doktora()
 {
     int pesel_rejestracja;
@@ -65,6 +95,7 @@ void rejestracja_doktora()
     {
         Doktor nowy_doktor(imie_rejestracja, nazwisko_rejestracja, pesel_rejestracja, specjalizacja_rejestracja);
         doktorzy.push_back(nowy_doktor);
+        nowy_doktor.zapiszPlikDoktora(nowy_doktor);
         cout << "Utworzono doktora" << endl;
     }
 }
@@ -73,7 +104,7 @@ void umowWizyte()
 {
     string szukana_specjalizacja;
     int planowany_dzien, planowana_godzina, pesel_pacjenta;
-    cout << "Podaj specjalizację lekarza:" << endl;
+    cout << "Podaj specjalizacje lekarza:" << endl;
     cin >> szukana_specjalizacja;
     cout << "Podaj dzien wizyty" << endl;
     cin >> planowany_dzien;
@@ -102,22 +133,91 @@ void umowWizyte()
     }
 }
 
-void wybierz_dzialanie()
+void usunWizyte()
+{
+    int pesel_doktora, dzien_usuwanej_wizyty, godzina_usuwanej_wizyty;
+    cout << "Podaj pesel doktora" << endl;
+    cin >> pesel_doktora;
+    cout << "Podaj dzien anulowanej wizyty" << endl;
+    cin >> dzien_usuwanej_wizyty;
+    cout << "Podaj godzine anulowanej wizyty" << endl;
+    cin >> godzina_usuwanej_wizyty;
+    for (int i = 0; i < doktorzy.size(); i++)
+    {
+        if (doktorzy[i].getPesel() == pesel_doktora)
+        {
+            doktorzy[i].usunWizyteWTerminarzu(dzien_usuwanej_wizyty, godzina_usuwanej_wizyty);
+        }
+        cout << "Pomyslnie anulowano wizyte" << endl;
+    }
+}
+
+void zmienTerminWizyty()
+{
+    int pesel_doktora, stary_dzien_wizyty, stara_godzina_wizyty, nowy_dzien_wizyty, nowa_godzina_wizyty, pesel_pacjenta;
+    cout << "Podaj pesel doktora" << endl;
+    cin >> pesel_doktora;
+    cout << "Podaj stary dzien wizyty" << endl;
+    cin >> stary_dzien_wizyty;
+    cout << "Podaj stara godzine wizyty" << endl;
+    cin >> stara_godzina_wizyty;
+    cout << "Podaj nowy dzien wizyty" << endl;
+    cin >> nowy_dzien_wizyty;
+    cout << "Podaj nowa godzine wizyty" << endl;
+    cin >> nowa_godzina_wizyty;
+    for (int i = 0; i < doktorzy.size(); i++)
+    {
+        if (doktorzy[i].getPesel() == pesel_doktora)
+        {
+            pesel_pacjenta = doktorzy[i].usunWizyteWTerminarzu(stary_dzien_wizyty, stara_godzina_wizyty);
+            doktorzy[i].ustawWizyteWTerminarzu(nowy_dzien_wizyty, nowa_godzina_wizyty, pesel_pacjenta);
+        }
+    }
+
+}
+
+void logowanie()
+{
+    string haslo;
+    cout << "Czy jestes (R) recepcjonista czy (D) dyrektorem?" << endl;
+    cin >> uzytkownik;
+    if (uzytkownik == "D")
+    {
+        do
+        {
+            cout << "Wpisz haslo dyrektora" << endl;
+            cin >> haslo;
+        } while (haslo != haslo_dyrektora);
+    }
+}
+
+void wybierz_dzialanie(string obecny_uzytkownik)
 {
     string dzialanie;
-    cout << "Wybierz dzialanie: P - rejestracja pacjenta, D - rejestracja doktora, W - umow wizyte, Z - zmien termin wizyty" << endl;
-    cin >> dzialanie;
-    if (dzialanie == "P") { rejestracja(); }
-    if (dzialanie == "D") { rejestracja_doktora(); }
-    if (dzialanie == "W") { umowWizyte(); }
-
+    if (uzytkownik == "R")
+    {
+        cout << "Wybierz dzialanie: P - rejestracja pacjenta, W - umow wizyte, Z - zmien termin wizyty, A - Anuluj wizyte" << endl;
+        cin >> dzialanie;
+        if (dzialanie == "P") { rejestracja(); }
+        if (dzialanie == "W") { umowWizyte(); }
+        if (dzialanie == "A") { usunWizyte(); }
+        if (dzialanie == "Z") { zmienTerminWizyty(); }
+    }
+    else
+    {
+        cout << "Wybierz dzialanie: D - zarejestruj doktora" << endl;
+        cin >> dzialanie;
+        if (dzialanie == "D") { rejestracja_doktora(); }
+    }
 }
 
 int main()
 {
+    //wczytajDoktora();
     while (true)
     {
-        wybierz_dzialanie();
+        logowanie();
+        wybierz_dzialanie(uzytkownik);
         //funkcja odpowiedzialna za odczytanie danych
         //funkcja odpowiedzialna za odpalenie wlaściwej akcji
     }

@@ -19,5 +19,7 @@ public:
 	Doktor();
 	bool czyTerminWolny(int dzien, int godzina);
 	void ustawWizyteWTerminarzu(int dzien, int godzina, int pesel);
+	int usunWizyteWTerminarzu(int dzien, int godzina);
+	void zapiszPlikDoktora(Doktor zapisywany_doktor);
 };
 

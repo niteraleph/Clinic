@@ -1,4 +1,17 @@
 #include "Doktor.h"
+#include <fstream>
+
+void Doktor::zapiszPlikDoktora(Doktor zapisywany_doktor)
+{
+    ofstream plikDoktora;
+    plikDoktora.open("C:\\Users\\Easyd\\Desktop\\serwis przychodnia\\Serwis przychodnia\\plikDoktora.txt");
+    plikDoktora << zapisywany_doktor.getImie() << endl;
+    plikDoktora << zapisywany_doktor.getNazwisko() << endl;
+    plikDoktora << zapisywany_doktor.getPesel() << endl;
+    plikDoktora << zapisywany_doktor.getspecjalizacja() << endl;
+    plikDoktora.close();
+}
+
 int Doktor::getPesel()
 {
     return pesel;
@@ -43,4 +56,20 @@ bool Doktor::czyTerminWolny(int dzien, int godzina)
 void Doktor::ustawWizyteWTerminarzu(int dzien, int godzina, int pesel)
 {
     terminarz.dodajWizyte(dzien, godzina, pesel);
+    ofstream plikDoktora;
+    plikDoktora.open("C:\\Users\\Easyd\\Desktop\\serwis przychodnia\\Serwis przychodnia\\plikDoktora.txt", ios::app);
+    for (int i = 0; i < 30; i++)
+    {
+        for (int it = 0; it < 7; it++)
+        {
+            plikDoktora << terminarz.dostepnosc[i][it] << " ";
+        }
+        plikDoktora << endl;
+    }
 }
+
+int Doktor::usunWizyteWTerminarzu(int dzien, int godzina)
+{
+    return terminarz.usunWizyte(dzien, godzina);
+}
+
